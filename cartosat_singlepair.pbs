@@ -1,0 +1,67 @@
+#PBS -S /bin/csh
+
+# Can be run interactively
+# qsub -N 169823_177845 -v pair=WV01_20110927_1020010016982300_1020010017784500 ~/bin/singlepair.pbs
+
+# Export environmental variables to batch job
+#PBS -V
+
+# Join stdout and stderr
+#PBS -j oe
+
+# Queue name
+#PBS -q normal 
+
+# Resources
+# Want to be careful about ~/.vwrc settings here - default cache size is 4 GB
+#PBS -l select=1:ncpus=20:model=ivy,walltime=2:00:00
+
+# Mail options
+#PBS -m abe
+
+# Group ID
+# #Arendt
+#PBS -W group_list=s1768
+# #Batu
+
+# Rerunnable (y/n)
+#PBS -r n
+
+#Check to make sure we're given an input pair
+if (! $?pair) then
+    echo "No input pair defined"
+    echo "Usage is $0 pair"
+    exit 1
+endif
+
+unalias cd
+
+if ($?PBS_O_WORKDIR) then
+    cd $PBS_O_WORKDIR
+else
+    setenv PBS_O_WORKDIR `pwd`
+endif
+
+#Check to make sure that input pair exists
+if (! -d $pair) then
+    echo "$pair not found in $PBS_O_WORKDIR"
+    echo
+    exit 1
+endif
+
+set ts = `date +%Y%m%d_%H%M`
+set logdir = $PBS_O_WORKDIR/log
+if (! -d $logdir) mkdir $logdir
+set jobid = `echo $PBS_JOBID | awk -F'.' '{print $1}'`
+set logfile = $logdir/${pair}_${ts}_${jobid}.log
+
+set script = /u/deshean/src/dgtools/dgtools/cartosat_stereo.sh
+set script_cp = $pair/${script:t:r}_${jobid}.${script:e}
+cp -pv $script $script_cp
+
+echo "Current directory is:"
+pwd
+echo
+
+#Check vwrc settings!
+$script_cp $pair >& $logfile
