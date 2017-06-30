@@ -1,6 +1,6 @@
 #! /bin/bash
 
-jobscript=$SRCDIR/pbs_scripts/singlepair.pbs
+jobscript=cartosat_singlepair.pbs
 
 dirlist=$(ls -d 17*)
 for i in $dirlist

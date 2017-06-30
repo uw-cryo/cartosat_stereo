@@ -55,7 +55,7 @@ if (! -d $logdir) mkdir $logdir
 set jobid = `echo $PBS_JOBID | awk -F'.' '{print $1}'`
 set logfile = $logdir/${pair}_${ts}_${jobid}.log
 
-set script = /u/deshean/src/dgtools/dgtools/cartosat_stereo.sh
+set script = cartosat_stereo.sh
 set script_cp = $pair/${script:t:r}_${jobid}.${script:e}
 cp -pv $script $script_cp
 
