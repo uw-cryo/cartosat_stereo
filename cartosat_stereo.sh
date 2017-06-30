@@ -96,6 +96,6 @@ base_dem_opt+=" --remove-outliers --remove-outliers-params 75.0 3.0"
 base_dem_opt+=" --threads 4"
 #base_dem_opt+=" --t_srs \"$proj\""
 base_dem_opt+=" --t_srs $proj"
-dem_res_list="10 40"
+dem_res_list="10 20 40"
 parallel "point2dem $base_dem_opt --tr {} -o $outdir/${prefix}_{}m $outdir/${prefix}-PC.tif" ::: $dem_res_list
 
